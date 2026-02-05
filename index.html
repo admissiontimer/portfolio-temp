@@ -93,8 +93,26 @@
         animation: floaty 6s ease-in-out infinite;
       }
 
-      .line-reveal {
-        animation: lineReveal 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      .line-stage {
+        position: relative;
+        min-height: clamp(3.4rem, 10vw, 5.4rem);
+      }
+
+      #typingText {
+        transform-origin: center left;
+        will-change: transform, opacity;
+      }
+
+      .line-sheen::after {
+        content: '';
+        position: absolute;
+        inset: -2px -8px;
+        background: linear-gradient(100deg, transparent 18%, rgba(147, 197, 253, 0.22) 48%, transparent 78%);
+        mix-blend-mode: screen;
+        filter: blur(8px);
+        opacity: 0;
+        pointer-events: none;
+        animation: sheenPass 900ms ease;
       }
 
       .mail-input:focus {
@@ -140,18 +158,17 @@
         }
       }
 
-      @keyframes lineReveal {
+      @keyframes sheenPass {
         0% {
           opacity: 0;
-          transform: translateY(10px) scale(0.985);
-          filter: blur(6px);
-          letter-spacing: 0.3em;
+          transform: translateX(-18px);
+        }
+        35% {
+          opacity: 1;
         }
         100% {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-          filter: blur(0);
-          letter-spacing: 0.2em;
+          opacity: 0;
+          transform: translateX(20px);
         }
       }
 
@@ -192,9 +209,11 @@
               I am crafting a portfolio that is fast, modern, and built with purpose.
             </p>
 
-            <p id="typingText" class="line-reveal text-sm font-medium uppercase tracking-[0.2em] text-violet-200 sm:text-base">
-              BUILDING EXPERIENCES THAT FEEL INSTANT
-            </p>
+            <div class="line-stage">
+              <p id="typingText" class="relative text-sm font-semibold uppercase tracking-[0.14em] text-violet-200 sm:text-base">
+                BUILDING EXPERIENCES THAT FEEL INSTANT
+              </p>
+            </div>
 
             <form id="notifyForm" class="mt-6 flex flex-col gap-3 sm:flex-row" novalidate>
               <label class="sr-only" for="email">Email</label>
@@ -275,15 +294,28 @@
       let lineIndex = 0;
 
       function cycleLine() {
-        typingEl.classList.remove('line-reveal');
+        typingEl.animate(
+          [
+            { opacity: 1, transform: 'translateY(0px) scale(1)' },
+            { opacity: 0, transform: 'translateY(-8px) scale(0.99)', offset: 0.45 },
+            { opacity: 0, transform: 'translateY(10px) scale(0.99)' },
+            { opacity: 1, transform: 'translateY(0px) scale(1)' }
+          ],
+          { duration: 1400, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+        );
+
+        typingEl.classList.remove('line-sheen');
         void typingEl.offsetWidth;
-        typingEl.textContent = lines[lineIndex];
-        typingEl.classList.add('line-reveal');
-        lineIndex = (lineIndex + 1) % lines.length;
+        typingEl.classList.add('line-sheen');
+
+        setTimeout(() => {
+          typingEl.textContent = lines[lineIndex];
+          lineIndex = (lineIndex + 1) % lines.length;
+        }, 420);
       }
 
       cycleLine();
-      setInterval(cycleLine, 2300);
+      setInterval(cycleLine, 2800);
 
       const countdownEl = document.getElementById('countdown');
       let infinityFlash = false;
