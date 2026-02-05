@@ -93,10 +93,8 @@
         animation: floaty 6s ease-in-out infinite;
       }
 
-      .typing-cursor::after {
-        content: '|';
-        margin-left: 0.2rem;
-        animation: blink 1s steps(1, end) infinite;
+      .line-reveal {
+        animation: lineReveal 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
       }
 
       .mail-input:focus {
@@ -142,9 +140,18 @@
         }
       }
 
-      @keyframes blink {
-        50% {
+      @keyframes lineReveal {
+        0% {
           opacity: 0;
+          transform: translateY(10px) scale(0.985);
+          filter: blur(6px);
+          letter-spacing: 0.3em;
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: blur(0);
+          letter-spacing: 0.2em;
         }
       }
 
@@ -181,12 +188,12 @@
             </h1>
 
             <p class="max-w-xl text-base text-slate-200/90 sm:text-lg">
-              Hello, I am <strong class="text-cyan-200">Hossain Mohammod Ratul</strong> — a first-year Electronics and Telecommunication Engineering (ETE) student at RUET.
+              Hello, I am <a class="text-cyan-200 underline decoration-cyan-300/60 underline-offset-4 hover:text-cyan-100" href="https://www.facebook.com/hmd.rtl" target="_blank" rel="noopener noreferrer">Hossain Mohammod Ratul</a> — a first-year Electronics and Telecommunication Engineering (ETE) student at RUET.
               I am crafting a portfolio that is fast, modern, and built with purpose.
             </p>
 
-            <p id="typingText" class="typing-cursor text-sm font-medium uppercase tracking-[0.2em] text-violet-200 sm:text-base">
-              Building a zappingly fast experience...
+            <p id="typingText" class="line-reveal text-sm font-medium uppercase tracking-[0.2em] text-violet-200 sm:text-base">
+              BUILDING EXPERIENCES THAT FEEL INSTANT
             </p>
 
             <form id="notifyForm" class="mt-6 flex flex-col gap-3 sm:flex-row" novalidate>
@@ -228,28 +235,28 @@
             <div class="space-y-4">
               <div>
                 <div class="mb-2 flex justify-between text-xs uppercase tracking-widest text-slate-300">
-                  <span>UI Crafting</span><span>92%</span>
+                  <span>UI Crafting</span><span>36%</span>
                 </div>
-                <div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="h-full w-[92%] rounded-full bg-gradient-to-r from-cyan-300 to-blue-300"></div></div>
+                <div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="h-full w-[36%] rounded-full bg-gradient-to-r from-cyan-300 to-blue-300"></div></div>
               </div>
 
               <div>
                 <div class="mb-2 flex justify-between text-xs uppercase tracking-widest text-slate-300">
-                  <span>Performance</span><span>96%</span>
+                  <span>Performance</span><span>67%</span>
                 </div>
-                <div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="h-full w-[96%] rounded-full bg-gradient-to-r from-violet-300 to-fuchsia-300"></div></div>
+                <div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="h-full w-[67%] rounded-full bg-gradient-to-r from-violet-300 to-fuchsia-300"></div></div>
               </div>
 
               <div>
                 <div class="mb-2 flex justify-between text-xs uppercase tracking-widest text-slate-300">
-                  <span>Launch Prep</span><span>88%</span>
+                  <span>Launch Prep</span><span>40%</span>
                 </div>
-                <div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="h-full w-[88%] rounded-full bg-gradient-to-r from-emerald-300 to-cyan-300"></div></div>
+                <div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="h-full w-[40%] rounded-full bg-gradient-to-r from-emerald-300 to-cyan-300"></div></div>
               </div>
             </div>
 
             <div class="mt-6 rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-slate-200">
-              Countdown mode: <span id="countdown" class="font-semibold text-cyan-100">00d : 00h : 00m : 00s</span>
+              Countdown mode: <span id="countdown" class="font-semibold text-cyan-100">∞ — Launching when it feels perfect</span>
             </div>
           </div>
         </div>
@@ -257,59 +264,33 @@
     </main>
 
     <script>
-      const phrases = [
-        'Building a zappingly fast experience...',
-        'Designing with precision and personality...',
-        'Calibrating pixels, performance, and purpose...'
+      const lines = [
+        'BUILDING EXPERIENCES THAT FEEL INSTANT',
+        'ENGINEERED FOR SPEED, CLARITY, AND SCALE',
+        'CRAFTING INTERFACES WITH INTENT',
+        'OPTIMIZED. MODERN. PURPOSEFUL.'
       ];
 
       const typingEl = document.getElementById('typingText');
-      let phraseIndex = 0;
-      let charIndex = 0;
-      let deleting = false;
+      let lineIndex = 0;
 
-      function typeLoop() {
-        const active = phrases[phraseIndex];
-
-        if (!deleting) {
-          charIndex += 1;
-          typingEl.textContent = active.slice(0, charIndex);
-
-          if (charIndex === active.length) {
-            deleting = true;
-            return setTimeout(typeLoop, 1450);
-          }
-        } else {
-          charIndex -= 1;
-          typingEl.textContent = active.slice(0, charIndex);
-
-          if (charIndex === 0) {
-            deleting = false;
-            phraseIndex = (phraseIndex + 1) % phrases.length;
-          }
-        }
-
-        setTimeout(typeLoop, deleting ? 35 : 65);
+      function cycleLine() {
+        typingEl.classList.remove('line-reveal');
+        void typingEl.offsetWidth;
+        typingEl.textContent = lines[lineIndex];
+        typingEl.classList.add('line-reveal');
+        lineIndex = (lineIndex + 1) % lines.length;
       }
 
-      typeLoop();
+      cycleLine();
+      setInterval(cycleLine, 2300);
 
-      const targetDate = Date.now() + 18 * 24 * 60 * 60 * 1000;
       const countdownEl = document.getElementById('countdown');
-
-      function renderCountdown() {
-        const diff = Math.max(0, targetDate - Date.now());
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const mins = Math.floor((diff / (1000 * 60)) % 60);
-        const secs = Math.floor((diff / 1000) % 60);
-
-        countdownEl.textContent = `${String(days).padStart(2, '0')}d : ${String(hours).padStart(2, '0')}h : ${String(mins).padStart(2, '0')}m : ${String(secs).padStart(2, '0')}s`;
-      }
-
-      renderCountdown();
-      setInterval(renderCountdown, 1000);
+      let infinityFlash = false;
+      setInterval(() => {
+        infinityFlash = !infinityFlash;
+        countdownEl.style.opacity = infinityFlash ? '0.72' : '1';
+      }, 900);
 
       const notifyForm = document.getElementById('notifyForm');
       const emailInput = document.getElementById('email');
@@ -326,6 +307,7 @@
           statusText.classList.add('text-rose-200');
           statusText.textContent = 'Please enter a valid email address.';
           emailInput.focus();
+          setTimeout(() => statusText.classList.add('hidden'), 5000);
           return;
         }
 
@@ -343,6 +325,7 @@
           statusText.classList.remove('hidden', 'text-rose-200');
           statusText.classList.add('text-emerald-200');
           statusText.textContent = `Awesome! We'll notify ${emailInput.value} at launch.`;
+          setTimeout(() => statusText.classList.add('hidden'), 5000);
 
           setTimeout(() => {
             sendBtn.classList.remove('sent');
