@@ -95,24 +95,18 @@
 
       .line-stage {
         position: relative;
-        min-height: clamp(3.4rem, 10vw, 5.4rem);
+        height: 1.75rem;
+        overflow: hidden;
       }
 
       #typingText {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
         transform-origin: center left;
         will-change: transform, opacity;
-      }
-
-      .line-sheen::after {
-        content: '';
-        position: absolute;
-        inset: -2px -8px;
-        background: linear-gradient(100deg, transparent 18%, rgba(147, 197, 253, 0.22) 48%, transparent 78%);
-        mix-blend-mode: screen;
-        filter: blur(8px);
-        opacity: 0;
-        pointer-events: none;
-        animation: sheenPass 900ms ease;
+        white-space: nowrap;
       }
 
       .mail-input:focus {
@@ -158,20 +152,6 @@
         }
       }
 
-      @keyframes sheenPass {
-        0% {
-          opacity: 0;
-          transform: translateX(-18px);
-        }
-        35% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-          transform: translateX(20px);
-        }
-      }
-
       @keyframes pulseRing {
         0%,
         100% {
@@ -210,7 +190,7 @@
             </p>
 
             <div class="line-stage">
-              <p id="typingText" class="relative text-sm font-semibold uppercase tracking-[0.14em] text-violet-200 sm:text-base">
+              <p id="typingText" class="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-violet-200 sm:text-sm lg:text-[0.92rem]">
                 BUILDING EXPERIENCES THAT FEEL INSTANT
               </p>
             </div>
@@ -296,26 +276,18 @@
       function cycleLine() {
         typingEl.animate(
           [
-            { opacity: 1, transform: 'translateY(0px) scale(1)' },
-            { opacity: 0, transform: 'translateY(-8px) scale(0.99)', offset: 0.45 },
-            { opacity: 0, transform: 'translateY(10px) scale(0.99)' },
-            { opacity: 1, transform: 'translateY(0px) scale(1)' }
+            { opacity: 0, transform: 'translateX(18px)', filter: 'blur(4px)' },
+            { opacity: 1, transform: 'translateX(0px)', filter: 'blur(0px)' }
           ],
-          { duration: 1400, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+          { duration: 640, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
         );
 
-        typingEl.classList.remove('line-sheen');
-        void typingEl.offsetWidth;
-        typingEl.classList.add('line-sheen');
-
-        setTimeout(() => {
-          typingEl.textContent = lines[lineIndex];
-          lineIndex = (lineIndex + 1) % lines.length;
-        }, 420);
+        typingEl.textContent = lines[lineIndex];
+        lineIndex = (lineIndex + 1) % lines.length;
       }
 
       cycleLine();
-      setInterval(cycleLine, 2800);
+      setInterval(cycleLine, 2200);
 
       const countdownEl = document.getElementById('countdown');
       let infinityFlash = false;
